@@ -1,5 +1,7 @@
-package com.shop.entity;
+package com.shop.domain.cart;
 
+import com.shop.domain.BaseEntity;
+import com.shop.domain.item.Item;
 import lombok.Getter;
 import lombok.Setter;
 

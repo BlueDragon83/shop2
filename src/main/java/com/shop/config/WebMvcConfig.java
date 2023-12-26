@@ -1,4 +1,4 @@
-package kr.co.codewiki.shoppingmall.config;
+package com.shop.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;

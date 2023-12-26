@@ -1,6 +1,7 @@
-package com.shop.entity;
+package com.shop.domain.cart;
 
 
+import com.shop.domain.BaseEntity;
 import lombok.*;
 
 import jakarta.persistence.*;
@@ -11,7 +12,7 @@ import jakarta.persistence.*;
 @Setter
 @ToString
 
-public class Cart extends BaseEntity{
+public class Cart extends BaseEntity {
 
     @Id
     @Column(name="cart_id")

@@ -1,5 +1,6 @@
-package com.shop.entity;
+package com.shop.domain.item;
 
+import com.shop.domain.BaseEntity;
 import lombok.*;
 
 import jakarta.persistence.*;
@@ -10,7 +11,7 @@ import jakarta.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ItemImg extends BaseEntity{
+public class ItemImg extends BaseEntity {
 
     @Id
     @Column(name="item_img_id")

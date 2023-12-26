@@ -1,12 +1,15 @@
 package com.shop.service;
 
+import com.shop.domain.item.Item;
+import com.shop.domain.item.ItemImg;
+import com.shop.domain.item.Order;
+import com.shop.domain.item.OrderItem;
 import com.shop.dto.OrderDto;
 import com.shop.dto.OrderHistDto;
 import com.shop.dto.OrderItemDto;
-import com.shop.entity.*;
 import com.shop.repository.ItemImgRepository;
 import com.shop.repository.ItemRepository;
-import com.shop.repository.MemberRepository;
+import com.shop.repository.UserRepository;
 import com.shop.repository.OrderRepository;
 import lombok.RequiredArgsConstructor; 
 import org.springframework.data.domain.Page;
@@ -28,7 +31,7 @@ public class OrderService {
 
     private final ItemRepository itemRepository;
 
-    private final MemberRepository memberRepository;
+    private final UserRepository memberRepository;
 
     private final OrderRepository orderRepository;
 

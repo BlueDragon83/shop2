@@ -1,6 +1,7 @@
-package com.shop.entity;
+package com.shop.domain.item;
 
 import com.shop.constant.OrderStatus;
+import com.shop.domain.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,7 +13,7 @@ import java.util.List;
 @Entity
 @Table(name="orders")
 @Getter @Setter
-public class Order extends BaseEntity{ // 등록한사람, 수정한사람만 있는 entity + 상속받은 등록일 수정일 entity 도 있음
+public class Order extends BaseEntity { // 등록한사람, 수정한사람만 있는 entity + 상속받은 등록일 수정일 entity 도 있음
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

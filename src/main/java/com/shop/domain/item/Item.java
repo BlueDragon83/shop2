@@ -1,12 +1,12 @@
-package com.shop.entity;
+package com.shop.domain.item;
 
 import com.shop.constant.ItemSellStatus;
+import com.shop.domain.BaseEntity;
 import com.shop.dto.ItemFormDto;
 import com.shop.exception.OutOfStockException;
 import lombok.*;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "item")
@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Item extends BaseEntity{
+public class Item extends BaseEntity {
 
     @Id
     @Column(name="item_id")

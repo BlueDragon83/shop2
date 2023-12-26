@@ -6,20 +6,27 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-@Configuration // 설정파일을 만들기 위한 애노테이션 or Bean을 등록하기 위한 애노테이션
+@Configuration
 @EnableWebSecurity
 public class SecurityConfig  {
 
-    @Autowired
-    MemberService memberService;
+    private final UserDetailService userService;
+
+    @Bean
+    public WebSecurityCustomizer configure() {
+        return (web) -> web.ignoring()
+                .requestMatchers(toH2Console())
+                .requestMatchers("/static/**");
+    }
 
     // http 요청에 대한 페이지 설정 (권한, 로그인 페이지, 로그아웃 메소드 등등)
 
@@ -31,39 +38,32 @@ public class SecurityConfig  {
                .requestMatchers("/admin/**").hasRole("ADMIN") // admin 만 접근
                .anyRequest().authenticated()
                .and()
-               .formLogin()
-               .loginPage("/members/login") // 로그인 페이지 url
-               .defaultSuccessUrl("/") // 로그인 성공 시 url
-               .usernameParameter("email") // 로그인 시 사용할 파라미터 이름 지정 (username 에 들어갈 변수?)
-               .failureUrl("/members/login/error") // 로그인 실패 시 url
-               .and()
-               .logout()
-               .logoutRequestMatcher(new AntPathRequestMatcher("/members/logout")) // 로그아웃 페이지 url
-               .logoutSuccessUrl("/"); // 로그아웃 성공 시 url
+               .formLogin((formLogin)->
+                       formLogin
+                               .loginPage("/members/login") // 로그인 페이지 url
+                                .defaultSuccessUrl("/") // 로그인 성공 시 url
+                                .usernameParameter("email") // 로그인 시 사용할 파라미터 이름 지정 (username 에 들어갈 변수?)
+                                .failureUrl("/members/login/error") // 로그인 실패 시 url
+               ).logout((logoutConfig)->
+                       logoutConfig
+                               .logoutRequestMatcher(new AntPathRequestMatcher("/members/logout")) // 로그아웃 페이지 url
+                               .logoutSuccessUrl("/") // 로그아웃 성공 시 url
+               ).userDetailsService(memberService);
        return http.build();
    }
 
-    // http 요청에 대한 보안 설정 (권한, 로그인 페이지, 로그아웃 메소드 등등)
     @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http, BCryptPasswordEncoder bCryptPasswordEncoder, UserDetailService userDetailService) throws Exception {
-        return http.getSharedObject(AuthenticationManagerBuilder.class)
-                .userDetailsService(memberService)
-                .passwordEncoder(bCryptPasswordEncoder)
-                .and()
-                .build();
+    public AuthenticationManager authenticationManager(
+           AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
+
     @Bean
     protected void configure(AuthenticationManagerBuilder auth) throws Exception{
 
         auth.userDetailsService(memberService)
                 .passwordEncoder(passwordEncoder());
     }
-            // AuthenticationManager 로 인증함
-            // AuthenticationManager 는 ~Builder 로 만듦
-            // auth 에 이거를 다 담아서 인증을 하는거지
-                // memberService 를 저장한다.(로그인 로그아웃 + 중복가입방지 + 중복 아니면 member save)
-                // 비번 암호화까지 해버림
-
 
     // 비번 암호화
     @Bean // BCryptPasswordEncoder 를 Bean 으로 등록해서 사용
