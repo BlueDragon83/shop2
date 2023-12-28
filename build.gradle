@@ -1,18 +1,13 @@
-// Query DSL 관련 스크립트 및 설정
-buildscript {
-    ext {
-        queryDslVersion = "5.0.0"
-    }
-}
-
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.2.1'
-    id 'io.spring.dependency-management' version '1.1.4'
-    //querydsl 추가
+    id 'org.springframework.boot' version '2.7.6'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
     id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
+bootJar{
+    enabled = true
+}
 group = 'com.shop'
 version = '0.0.1-SNAPSHOT'
 
@@ -31,21 +26,18 @@ repositories {
 }
 
 dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation group: 'org.modelmapper', name: 'modelmapper', version: '2.4.2'
-
-    // QueryDSL 설정
-    implementation "com.querydsl:querydsl-jpa:5.0.0:jakarta"
-    annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
-    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
-    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
-    // -- QueryDSL ---
+    implementation 'org.apache.commons:commons-lang3:3.12.0'
+    implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
+    implementation 'com.querydsl:querydsl-apt:5.0.0'
+    implementation 'com.querydsl:querydsl-jpa:5.0.0'
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.mysql:mysql-connector-j'
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
@@ -58,23 +50,23 @@ tasks.named('test') {
     useJUnitPlatform()
 }
 
+// querydsl 세팅 시작
 def querydslDir = "$buildDir/generated/querydsl"
-
 querydsl {
     jpa = true
-    querydslSourcesDir = querydslDir}
-
+    querydslSourcesDir = querydslDir
+}
 sourceSets {
     main.java.srcDir querydslDir
 }
-
 compileQuerydsl {
     options.annotationProcessorPath = configurations.querydsl
 }
-
 configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
+    compileOnly{
+       extendsFrom annotationProcessor
     }
     querydsl.extendsFrom compileClasspath
 }
+
+// querydsl 세팅 끝

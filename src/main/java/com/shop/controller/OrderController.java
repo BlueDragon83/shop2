@@ -15,10 +15,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
+import javax.validation.Valid;
 import java.security.Principal;
-import java.util.List; 
-import java.util.Optional; 
+import java.util.List;
+import java.util.Optional;
 
 // 주문 관련 요청들을 처리
 // 비동기 방식 사용_상품 주문에서 웹 페이지의 새로 고침 없이 서버에서 주문을 요청하기 위해서

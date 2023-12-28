@@ -2,8 +2,8 @@ package com.shop.dto;
 
 import lombok.Getter;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 // 장바구니에 담을 상품의 id 와 수량 전달 받음
 @Getter
 public class CartItemDto {

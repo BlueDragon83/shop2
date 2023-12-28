@@ -3,9 +3,9 @@ package com.shop.dto;
 import lombok.Getter;
 import lombok.Setter;
 
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 //  주문할 상품의 아이디와 주문 수량을 전달받을 dto 임 (상품 상세 페이지에서 전달받음)
 @Getter

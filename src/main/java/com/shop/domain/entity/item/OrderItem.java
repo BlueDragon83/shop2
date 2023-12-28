@@ -1,14 +1,14 @@
-package com.shop.domain.item;
+package com.shop.domain.entity.item;
 
-import com.shop.domain.BaseEntity;
+import com.shop.domain.BaseTimeEntity;
 import lombok.Getter;
 import lombok.Setter;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 
 @Entity
 @Getter @Setter
-public class OrderItem extends BaseEntity { // BaseEntity: 등록한사람, 수정한사람만 있는 entity + 상속받은 등록일 수정일 entity 도 있음
+public class OrderItem extends BaseTimeEntity { // BaseEntity: 등록한사람, 수정한사람만 있는 entity + 상속받은 등록일 수정일 entity 도 있음
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -1,113 +1,100 @@
 package com.shop.service;
 
-// 상품 등록
-
+import com.shop.domain.entity.item.Item;
+import com.shop.domain.entity.item.ItemImg;
 import com.shop.dto.ItemFormDto;
 import com.shop.dto.ItemImgDto;
 import com.shop.dto.ItemSearchDto;
 import com.shop.dto.MainItemDto;
-import com.shop.domain.item.Item;
-import com.shop.domain.item.ItemImg;
 import com.shop.repository.ItemImgRepository;
 import com.shop.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import jakarta.persistence.EntityNotFoundException;
+
+import javax.persistence.EntityNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
-// 상품 등록 service
 @Service
-@Transactional
 @RequiredArgsConstructor
+@Transactional
 public class ItemService {
 
     private final ItemRepository itemRepository;
-
     private final ItemImgService itemImgService;
-
     private final ItemImgRepository itemImgRepository;
 
-    public Long saveItem(ItemFormDto itemFormDto, List<MultipartFile> itemImgFileList) throws Exception{
+    // 상품 등록
+    public Long saveItem(ItemFormDto itemFormDto, List<MultipartFile> itemImgFileList) throws Exception {
 
-        // 상품 등록
+        // 상품 등록 (1번)
         Item item = itemFormDto.createItem();
         itemRepository.save(item);
 
-        //이미지 등록
-        for(int i=0;i<itemImgFileList.size();i++){
-            ItemImg itemImg = new ItemImg();
-            itemImg.setItem(item);
-
-            if(i == 0)
-                itemImg.setRepimgYn("Y"); // 첫번째 이미지를 대표 상품 이미지로 설정
-            else
-                itemImg.setRepimgYn("N");
-
-            itemImgService.saveItemImg(itemImg, itemImgFileList.get(i)); // 리스트 형태로 이미지들 저장
+        // 이미지 등록(2번, 순서중요)
+        for (int i = 0; i < itemImgFileList.size(); i++) {
+            ItemImg itemimg = new ItemImg();
+            itemimg.setItem(item);
+            if (i == 0) {
+                itemimg.setRepimgYn("Y");
+            } else{
+                itemimg.setRepimgYn("N");
+            }
+            itemImgService.saveItemImg(itemimg, itemImgFileList.get(i));
         }
-
         return item.getId();
+
     }
 
-    // 상품 수정하기를 위한 service
-    // 상품이랑, 상품이미지의 entity -> dto 로 바꾸기만 하는 service
-    @Transactional(readOnly = true) // 트랜젝션을 readOnly 로 설정할 경우, JPA 가 변경감지(더티체킹)를 수행하지 않아서 성능 향상됨_데이터 수정이 일어나지 않기 때문에 (수정은 밑에서 함)
-    public ItemFormDto getItemDtl(Long itemId){
+    // 상품 관리 페이지 상품 목록 조회
+    @Transactional(readOnly = true)
+    public Page<Item> getAdminItemPage(ItemSearchDto itemSearchDto, Pageable pageable) {
+        return itemRepository.getAdminItemPage(itemSearchDto, pageable);
+    }
 
+    // 상품 조회
+    @Transactional(readOnly = true)
+    public ItemFormDto getItemDetail(Long itemId) {
+
+        // 상품 이미지 엔티티들을 itemImgDto 객체로 변환하여 itemImgDtoList 에 담음
         List<ItemImg> itemImgList = itemImgRepository.findByItemIdOrderByIdAsc(itemId);
         List<ItemImgDto> itemImgDtoList = new ArrayList<>();
 
         for (ItemImg itemImg : itemImgList) {
             ItemImgDto itemImgDto = ItemImgDto.of(itemImg);
-            itemImgDtoList.add(itemImgDto); // entity -> dto
+            itemImgDtoList.add(itemImgDto);
         }
 
-        Item item = itemRepository.findById(itemId)
-                .orElseThrow(EntityNotFoundException::new);
-
+        // 상품 엔티티를 ItemFormDto 객체로 변환하고 itemImgDtoList 멤버변수를 초기화
+        Item item = itemRepository.findById(itemId).orElseThrow(EntityNotFoundException::new);
         ItemFormDto itemFormDto = ItemFormDto.of(item);
         itemFormDto.setItemImgDtoList(itemImgDtoList);
-        return itemFormDto; //itemFormDto 에는 상품이랑 상품 이미지 다 있움
+        return itemFormDto;
+
     }
 
+    // 상품 수정
+    public Long updateItem(ItemFormDto itemFormDto, List<MultipartFile> itemImgFileList) throws IOException {
 
-    // 상품 데이터 수정
-    // dto 로 변환된 상품이랑 상품이미지를 수정
-    public Long updateItem(ItemFormDto itemFormDto, List<MultipartFile> itemImgFileList) throws Exception{
+        // 상품 수정
+        Item item = itemRepository.findById(itemFormDto.getId()).orElseThrow(EntityNotFoundException::new);
+        item.updateItem(itemFormDto);
 
-        //상품 수정
-        Item item = itemRepository.findById(itemFormDto.getId()) // 상품 아이디로 상품 엔티티를 조회 (아이디는 상품 등록 화면에서 전달 받음)
-                .orElseThrow(EntityNotFoundException::new);
-
-        item.updateItem(itemFormDto); // itemFormDto 로 상품 엔티티 수정 (itemFormDto 는 상품 등록 화면에서 전달 받음)
-
-        List<Long> itemImgIds = itemFormDto.getItemImgIds(); // 상품 이미지 아이디 리스트 조회
-
-        //이미지 등록
-        for(int i=0;i<itemImgFileList.size();i++){
-            itemImgService.updateItemImg(itemImgIds.get(i),
-                    itemImgFileList.get(i));
-            // updateItemImg() 에다가 상품 이미지 id, 이미지 파일 정보를 파라미터를 받고
-            // 그걸로 이미지 수정함함
+        // 상품 이미지 수정
+        List<Long> itemImgIds = itemFormDto.getItemImgIds();
+        for (int i = 0; i < itemImgFileList.size(); i++) {
+            itemImgService.updateItemImg(itemImgIds.get(i), itemImgFileList.get(i));
         }
 
         return item.getId();
     }
 
-    // 상품 데이터 조회
-    // 상품 조회 조건 + 페이지 정보 를 파라미터로 받음
-    @Transactional(readOnly = true) // 트랜젝션을 readOnly 로 설정할 경우, JPA 가 변경감지(더티체킹)를 수행하지 않아서 성능 향상됨 _데이터 수정이 일어나지 않기 때문에
-    public Page<Item> getAdminItemPage(ItemSearchDto itemSearchDto, Pageable pageable){
-        return itemRepository.getAdminItemPage(itemSearchDto, pageable);
-    }
-
-    // 메인 페이지에 보여줄 상품 데이테 조회
+    // 메인 페이지 상품 목록 조회
     @Transactional(readOnly = true)
     public Page<MainItemDto> getMainItemPage(ItemSearchDto itemSearchDto, Pageable pageable){
         return itemRepository.getMainItemPage(itemSearchDto, pageable);

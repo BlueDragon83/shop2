@@ -1,11 +1,12 @@
-package com.shop.domain.item;
+package com.shop.domain.entity.item;
 
-import com.shop.constant.OrderStatus;
-import com.shop.domain.BaseEntity;
+import com.shop.domain.BaseTimeEntity;
+import com.shop.domain.enums.OrderStatus;
+import com.shop.domain.entity.user.User;
 import lombok.Getter;
 import lombok.Setter;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +14,7 @@ import java.util.List;
 @Entity
 @Table(name="orders")
 @Getter @Setter
-public class Order extends BaseEntity { // 등록한사람, 수정한사람만 있는 entity + 상속받은 등록일 수정일 entity 도 있음
+public class Order extends BaseTimeEntity { // 등록한사람, 수정한사람만 있는 entity + 상속받은 등록일 수정일 entity 도 있음
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -22,7 +23,7 @@ public class Order extends BaseEntity { // 등록한사람, 수정한사람만 �
 
     @ManyToOne(fetch = FetchType.LAZY) // 한 명의 회원은 여러 번 주문을 할 수 있다
     @JoinColumn(name = "member_id")
-    private Member member;
+    private User user;
 
     private LocalDateTime orderDate; // 주문일
 
@@ -49,10 +50,10 @@ public class Order extends BaseEntity { // 등록한사람, 수정한사람만 �
 
     }
 
-    public static Order createOrder(Member member, List<OrderItem> orderItemList) {
+    public static Order createOrder(User user, List<OrderItem> orderItemList) {
 
         Order order = new Order();
-        order.setMember(member); // 상품을 주문한 회원의 정보 setter
+        order.setUser(user); // 상품을 주문한 회원의 정보 setter
 
         for(OrderItem orderItem : orderItemList) {
             order.addOrderItem(orderItem);

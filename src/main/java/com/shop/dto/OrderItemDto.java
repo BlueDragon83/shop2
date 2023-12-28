@@ -1,6 +1,6 @@
 package com.shop.dto;
 
-import com.shop.domain.item.OrderItem;
+import com.shop.domain.entity.item.OrderItem;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,7 +11,7 @@ import lombok.Setter;
 public class OrderItemDto {
 
     public OrderItemDto(OrderItem orderItem, String imgUrl){ // 주문상품, 이미지경로를 파라미터로 받음
-        this.itemNm = orderItem.getItem().getItemNm();
+        this.itemNm = orderItem.getItem().getItemName();
         this.count = orderItem.getCount();
         this.orderPrice = orderItem.getOrderPrice();
         this.imgUrl = imgUrl;

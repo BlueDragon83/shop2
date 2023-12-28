@@ -2,7 +2,7 @@ package com.shop.domain;
 
 import lombok.Getter;
 
-import jakarta.persistence.Embeddable;
+import javax.persistence.Embeddable;
 
 @Embeddable
 @Getter

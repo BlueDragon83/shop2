@@ -1,18 +1,19 @@
 package com.shop.service;
 
+import com.shop.domain.user.Member;
 import com.shop.dto.CartDetailDto;
 import com.shop.dto.CartItemDto;
 import com.shop.dto.CartOrderDto;
 import com.shop.dto.OrderDto;
 import com.shop.domain.cart.Cart;
 import com.shop.domain.cart.CartItem;
-import com.shop.domain.item.Item;
-import com.shop.domain.Member;
+import com.shop.domain.entity.item.Item;
+
 import com.shop.repository.CartItemRepository;
 import com.shop.repository.CartRepository;
 import com.shop.repository.ItemRepository;
-import com.shop.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
+import com.shop.repository.MemberRepository;
+import javax.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +27,7 @@ import java.util.List;
 public class CartService {
 
     private final ItemRepository itemRepository;
-    private final UserRepository memberRepository;
+    private final MemberRepository memberRepository;
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
     private final OrderService orderService;
