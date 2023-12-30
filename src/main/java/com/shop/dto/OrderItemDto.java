@@ -11,13 +11,13 @@ import lombok.Setter;
 public class OrderItemDto {
 
     public OrderItemDto(OrderItem orderItem, String imgUrl){ // 주문상품, 이미지경로를 파라미터로 받음
-        this.itemNm = orderItem.getItem().getItemName();
+        this.itemName = orderItem.getItem().getItemName();
         this.count = orderItem.getCount();
         this.orderPrice = orderItem.getOrderPrice();
         this.imgUrl = imgUrl;
     }
 
-    private String itemNm; //상품명
+    private String itemName; //상품명
     private int count; //주문 수량
 
     private int orderPrice; //주문 금액

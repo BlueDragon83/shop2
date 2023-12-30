@@ -1,12 +1,12 @@
 package com.shop.service;
 
-import com.shop.domain.user.Member;
+import com.shop.domain.entity.item.Cart;
+import com.shop.domain.entity.item.CartItem;
+import com.shop.domain.entity.member.Member;
 import com.shop.dto.CartDetailDto;
 import com.shop.dto.CartItemDto;
 import com.shop.dto.CartOrderDto;
 import com.shop.dto.OrderDto;
-import com.shop.domain.cart.Cart;
-import com.shop.domain.cart.CartItem;
 import com.shop.domain.entity.item.Item;
 
 import com.shop.repository.CartItemRepository;
@@ -14,6 +14,7 @@ import com.shop.repository.CartRepository;
 import com.shop.repository.ItemRepository;
 import com.shop.repository.MemberRepository;
 import javax.persistence.EntityNotFoundException;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

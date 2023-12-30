@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.util.StringUtils;
 
 import javax.persistence.EntityNotFoundException;
+import java.io.File;
 import java.io.IOException;
 
 @Service
@@ -21,25 +22,14 @@ public class ItemImgService {
     private String itemImgLocation;
 
     private final FileService fileService;
-    private final ItemImgRepository itemImgRepository;
+    private static final ItemImgRepository itemImgRepository = null;
 
     // 상품 이미지 저장
-    public void saveItemImg(ItemImg itemimg, MultipartFile itemImgFile) throws IOException {
-
-        String oriImgName = itemImgFile.getOriginalFilename();
-        String imgName = "";
-        String imgUrl = "";
-
-        // 파일 업로드
-        if (!StringUtils.isEmpty(oriImgName)) {
-            imgName = fileService.uploadFile(itemImgLocation, oriImgName, itemImgFile.getBytes());
-            imgUrl = "/images/item/" + imgName;
+    public static void saveItemImg(ItemImg itemimg) throws IOException {
+        if (itemimg != null) {
+            // 상품 이미지 정보 저장
+            itemImgRepository.save(itemimg);
         }
-
-
-        // 상품 이미지 정보 저장
-        itemimg.updateItemImg(oriImgName, imgName, imgUrl);
-        itemImgRepository.save(itemimg);
     }
 
     // 상품 이미지 수정
@@ -53,11 +43,10 @@ public class ItemImgService {
             if (!StringUtils.isEmpty(savedItemImg.getImgName())) {
                 fileService.deleteFile(itemImgLocation + "/" + savedItemImg);
             }
-
-            String oriImgName = itemImgFile.getOriginalFilename();
-            String imgName = fileService.uploadFile(itemImgLocation, oriImgName, itemImgFile.getBytes());
-            String imgUrl = "/images/item/" + imgName;
-            savedItemImg.updateItemImg(oriImgName, imgName, imgUrl);
+            String origFileName = itemImgFile.getOriginalFilename();
+            String imgName = fileService.uploadFile(itemImgLocation, origFileName, itemImgFile.getBytes());
+            ItemImg itemImg = savedItemImg.builder().origFileName(origFileName).imgName(imgName).filePath(savedItemImg.getFilePath()).fileSize(itemImgFile.getSize()).build();
+            itemImgRepository.save(itemImg);
 
         }
     }

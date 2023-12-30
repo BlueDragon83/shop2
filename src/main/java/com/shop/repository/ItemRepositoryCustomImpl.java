@@ -8,8 +8,8 @@ import com.shop.domain.entity.item.Item;
 import com.shop.dto.ItemSearchDto;
 import com.shop.dto.MainItemDto;
 import com.shop.dto.QMainItemDto;
-import com.shop.domain.item.QItem;
-import com.shop.domain.item.QItemImg;
+import com.shop.domain.entity.item.QItem;
+import com.shop.domain.entity.item.QItemImg;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -43,7 +43,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
             dateTime = dateTime.minusMonths(6);
         }
 
-        return QItem.item.regTime.after(dateTime);
+        return QItem.item.createdDate.after(dateTime);
     }
 
     // 상품 상태에 대한 조회 조건 BooleanExpression
@@ -55,8 +55,6 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
     private BooleanExpression searchByLike(String searchBy, String searchQuery) {
         if (StringUtils.equals("itemName", searchBy)) {
             return QItem.item.itemName.like("%" + searchQuery + "%");
-        } else if (StringUtils.equals("createdBy", searchBy)) {
-            return QItem.item.createdBy.like("%" + searchQuery + "%");
         }
         return null;
     }
@@ -106,7 +104,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 )
                 .from(itemImg)
                 .join(itemImg.item, item)
-                .where(itemImg.repimgYn.eq("Y"))
+                .where(itemImg.mainImgYn.eq("Y"))
                 .where(itemNameLike(itemSearchDto.getSearchQuery()))
                 .orderBy(item.id.desc())
                 .offset(pageable.getOffset())

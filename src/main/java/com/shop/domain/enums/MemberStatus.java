@@ -1,6 +1,11 @@
 package com.shop.domain.enums;
 
-public enum UserStatus {
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@Getter
+@RequiredArgsConstructor
+public enum MemberStatus {
     NORMAL("NORMAL", "정상")
     , REST("REST", "휴먼")
     , STOP("STOP", "중지")
@@ -8,10 +13,4 @@ public enum UserStatus {
 
     private final String code;
     private final String label;
-
-    UserStatus(String code, String label){
-        this.code = code;
-        this.label = label;
-
-    }
 }

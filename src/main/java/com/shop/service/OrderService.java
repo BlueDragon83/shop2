@@ -4,15 +4,15 @@ import com.shop.domain.entity.item.Item;
 import com.shop.domain.entity.item.ItemImg;
 import com.shop.domain.entity.item.Order;
 import com.shop.domain.entity.item.OrderItem;
-import com.shop.domain.user.Member;
+import com.shop.domain.entity.member.Member;
 import com.shop.dto.OrderDto;
 import com.shop.dto.OrderHistDto;
 import com.shop.dto.OrderItemDto;
 import com.shop.repository.ItemImgRepository;
 import com.shop.repository.ItemRepository;
-import com.shop.repository.MemberRepository;
 import com.shop.repository.OrderRepository;
-import lombok.RequiredArgsConstructor; 
+import com.shop.repository.MemberRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable; 
@@ -45,7 +45,7 @@ public class OrderService {
         Item item = itemRepository.findById(orderDto.getItemId()) // 주문할 상품을 조회
                 .orElseThrow(EntityNotFoundException::new);
 
-        Member member = memberRepository.findByEmail(email); // 현재 로그인한 회원의 회원 조회 (이메일 정보로)
+        Member member =  memberRepository.findByEmail(email); // 현재 로그인한 회원의 회원 조회 (이메일 정보로)
 
         List<OrderItem> orderItemList = new ArrayList<>();
 
@@ -77,7 +77,7 @@ public class OrderService {
 
             for (OrderItem orderItem : orderItems) { // entity -> dto
 
-                ItemImg itemImg = itemImgRepository.findByItemIdAndRepimgYn
+                ItemImg itemImg = itemImgRepository.findByItemIdAndMainImgYn
                         (orderItem.getItem().getId(), "Y"); // 대표상품인지 보는거 (상품 이력 페이지에 출력해야 하니까)
                 OrderItemDto orderItemDto =
                         new OrderItemDto(orderItem, itemImg.getImgUrl()); // entity-> dto
@@ -116,7 +116,7 @@ public class OrderService {
     // 장바구니에서 주문할 상품 데이터를 전달받아서 주문 생성
     public Long orders(List<OrderDto> orderDtoList, String email){
 
-        Member member = memberRepository.findByEmail(email);
+        Member member  = memberRepository.findByEmail(email);
         List<OrderItem> orderItemList = new ArrayList<>();
 
         // 주문할 상품 리스트
