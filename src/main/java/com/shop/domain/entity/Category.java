@@ -26,6 +26,6 @@ public class Category {
     @Column(name = "depth")
     private Long depth;
 
-    @OneToMany(mappedBy = "parent")
-    private List<Category> children = new ArrayList<>();
+    /*@OneToMany(mappedBy = "parent")
+    private List<Category> children = new ArrayList<>();*/
 }

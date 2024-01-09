@@ -1,10 +1,9 @@
 package com.shop.config;
 
-import com.shop.service.MemberService;
+import com.shop.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -19,7 +18,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    MemberService memberService;
+    UserService userService;
 
 
     @Override
@@ -34,13 +33,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint());
 
         http.formLogin()
-                .loginPage("/member/login")
+                .loginPage("/user/login")
                 .defaultSuccessUrl("/")
                 .usernameParameter("email")
-                .failureUrl("/member/login/fail")
+                .failureUrl("/user/login/fail")
                 .and()
                 .logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/member/logout"))
+                .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
                 .logoutSuccessUrl("/");
     }
 
@@ -51,7 +50,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(memberService).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(userService).passwordEncoder(passwordEncoder());
     }
 
     @Bean

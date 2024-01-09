@@ -99,7 +99,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                                 item.id,
                                 item.itemName,
                                 item.itemDetail,
-                                itemImg.imgUrl,
+                                itemImg.filePath,
                                 item.price)
                 )
                 .from(itemImg)

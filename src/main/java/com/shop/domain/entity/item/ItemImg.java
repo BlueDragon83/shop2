@@ -1,16 +1,16 @@
 package com.shop.domain.entity.item;
 
-import com.shop.domain.BaseTimeEntity;
-import com.shop.domain.entity.item.Item;
+import com.shop.domain.BaseEntity;
 import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
+@Table(name = "item_img")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class ItemImg extends BaseTimeEntity{
+public class ItemImg extends BaseEntity {
 
     @Id
     @Column(name="item_img_id")

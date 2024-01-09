@@ -90,7 +90,7 @@ public class OrderController {
             return new ResponseEntity<String>("주문 취소 권한이 없습니다.", HttpStatus.FORBIDDEN);
         }
 
-        orderService.cancelOrder(orderId);
+        orderService.orderCancel(orderId);
         return new ResponseEntity<Long>(orderId, HttpStatus.OK);
     }
 

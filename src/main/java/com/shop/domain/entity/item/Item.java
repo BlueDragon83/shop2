@@ -1,21 +1,19 @@
 package com.shop.domain.entity.item;
 
-import com.shop.domain.BaseTimeEntity;
-import com.shop.domain.entity.Category;
+import com.shop.domain.BaseEntity;
 import com.shop.domain.enums.ItemSellStatus;
 import com.shop.dto.ItemFormDto;
 import com.shop.exception.OutOfStockException;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
+@Table(name = "item")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Item extends BaseTimeEntity{
+public class Item extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -38,8 +36,8 @@ public class Item extends BaseTimeEntity{
     @Enumerated(EnumType.STRING)
     private ItemSellStatus itemSellStatus;
 
-    @ManyToMany(mappedBy = "items")
-    private List<Category> categories = new ArrayList<>();
+    //@ManyToMany(mappedBy = "items")
+    //private List<Category> categories = new ArrayList<>();
 
     public void updateItem(ItemFormDto itemFormDto) {
         this.itemName = itemFormDto.getItemName();

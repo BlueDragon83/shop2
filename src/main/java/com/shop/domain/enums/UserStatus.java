@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum MemberStatus {
+public enum UserStatus {
     NORMAL("NORMAL", "정상")
     , REST("REST", "휴먼")
     , STOP("STOP", "중지")
