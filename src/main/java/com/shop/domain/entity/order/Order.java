@@ -1,7 +1,8 @@
-package com.shop.domain.entity.item;
+package com.shop.domain.entity.order;
+
 
 import com.shop.domain.BaseEntity;
-import com.shop.domain.entity.user.User;
+import com.shop.domain.entity.member.Member;
 import com.shop.domain.enums.OrderStatus;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,7 +24,7 @@ public class Order extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    private Member member;
 
     private LocalDateTime orderDate; //주문일
 
@@ -39,10 +40,10 @@ public class Order extends BaseEntity {
         orderItem.setOrder(this);
     }
 
-    public static Order createOrder(User user, List<OrderItem> orderItemList) {
+    public static Order createOrder(Member member, List<OrderItem> orderItemList) {
 
         Order order = new Order();
-        order.setUser(user);
+        order.setMember(member);
         for (OrderItem orderItem : orderItemList) {
             order.addOrderItem(orderItem);
         }

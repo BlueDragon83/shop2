@@ -1,22 +1,18 @@
-package com.shop.domain.entity.user;
+package com.shop.domain.entity.member;
 
 import com.shop.domain.BaseEntity;
-import com.shop.domain.entity.item.Order;
-import com.shop.domain.entity.item.OrderItem;
 import com.shop.domain.enums.Role;
 import com.shop.domain.enums.UserStatus;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 
-public class User extends BaseEntity {
+public class Member extends BaseEntity {
 
 @Id
 @Column(name = "User_id")
@@ -44,7 +40,7 @@ public class User extends BaseEntity {
 
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    //@Column(nullable = false)
     private Role role;
 
     @Enumerated(EnumType.STRING)
@@ -61,7 +57,7 @@ public class User extends BaseEntity {
         return this.role.getKey();
     }
     @Builder
-    public User(String email, String password, String name, String phone, String address, String picture, Role role, UserStatus userStatus, String emailAgreeYn, String smsAgreeYn) {
+    public Member(String email, String password, String name, String phone, String address, String picture, Role role, UserStatus userStatus, String emailAgreeYn, String smsAgreeYn) {
         this.email = email;
         this.password = password;
         this.name = name;
@@ -74,8 +70,8 @@ public class User extends BaseEntity {
         this.smsAgreeYn = smsAgreeYn;
     }
 
-    public User toEntity() {
-        return User.builder()
+    public Member toEntity() {
+        return Member.builder()
                 .email(email)
                 .password(password)
                 .name(name)
@@ -85,18 +81,20 @@ public class User extends BaseEntity {
                 .build();
     }
 
-    @OneToMany(mappedBy = "user")
+   /*
+   @OneToMany(mappedBy = "user")
     private List<Order> userOrder = new ArrayList<>();
 
     // 구매자의 주문상품들
     @OneToMany(mappedBy = "user")
     private List<OrderItem> userOrderItem = new ArrayList<>();
 
-    /*// 판매자의 판매상품들
+    // 판매자의 판매상품들
     @OneToMany(mappedBy = "seller")
     private List<SaleItem> sellerSaleItem = new ArrayList<>();
 
     // 판매자의 판매
     @OneToMany(mappedBy = "seller")
-    private List<Sale> sellerSale;*/
+    private List<Sale> sellerSale;
+    */
 }

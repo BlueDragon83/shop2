@@ -1,7 +1,7 @@
 package com.shop.dto;
 
 import com.shop.domain.enums.OrderStatus;
-import com.shop.domain.entity.item.Order;
+import com.shop.domain.entity.order.Order;
 import lombok.Getter;
 import lombok.Setter;
 

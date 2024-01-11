@@ -3,16 +3,15 @@ package com.shop.service;
 
 import com.shop.domain.entity.item.Item;
 import com.shop.domain.entity.item.ItemImg;
-import com.shop.domain.entity.item.Order;
-import com.shop.domain.entity.item.OrderItem;
-import com.shop.domain.entity.user.Member;
-import com.shop.domain.entity.user.User;
+import com.shop.domain.entity.order.Order;
+import com.shop.domain.entity.order.OrderItem;
+import com.shop.domain.entity.member.Member;
 import com.shop.dto.OrderDto;
 import com.shop.dto.OrderHistDto;
 import com.shop.dto.OrderItemDto;
 import com.shop.repository.ItemImgRepository;
 import com.shop.repository.ItemRepository;
-import com.shop.repository.UserRepository;
+import com.shop.repository.MemberRepository;
 import com.shop.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -32,7 +31,7 @@ import java.util.List;
 public class OrderService {
 
     private final ItemRepository itemRepository;        // 상품을 불러와서 재고를 변경해야함
-    private final UserRepository userRepository;    // 멤버를 불러와서 연결해야함
+    private final MemberRepository memberRepository;    // 멤버를 불러와서 연결해야함
     private final OrderRepository orderRepository;      // 주문 객체를 저장해야함
     private final ItemImgRepository itemImgRepository;  // 상품 대표 이미지를 출력해야함
 
@@ -45,8 +44,8 @@ public class OrderService {
         orderItemList.add(OrderItem.createOrderItem(item, orderDto.getCount()));
 
         // Order 객체 생성
-        User user = userRepository.findByEmail(email);
-        Order order =  Order.createOrder(user, orderItemList);
+        Member member = memberRepository.findByEmail(email);
+        Order order =  Order.createOrder(member, orderItemList);
 
         // Order 객체 DB 저장 (Cascade로 인해 OrderItem 객체도 같이 저장)
         orderRepository.save(order);
@@ -81,7 +80,7 @@ public class OrderService {
 
         Order order = orderRepository.findById(orderId).orElseThrow(EntityNotFoundException::new);
 
-        if (StringUtils.equals(order.getUser().getEmail(), email)) {
+        if (StringUtils.equals(order.getMember().getEmail(), email)) {
             return true;
         }
         return false;
@@ -98,7 +97,7 @@ public class OrderService {
     public Long orders(List<OrderDto> orderDtoList, String email) {
 
         // 로그인한 유저 조회
-        User user = userRepository.findByEmail(email);
+        Member member = memberRepository.findByEmail(email);
 
         // orderDto 객체를 이용하여 item 객체와 count 값을 얻어낸 뒤, 이를 이용하여 OrderItem 객체(들) 생성
         List<OrderItem> orderItemList = new ArrayList<>();
@@ -109,7 +108,7 @@ public class OrderService {
         }
 
         //Order Entity 클래스에 존재하는 createOrder 메소드로 Order 생성 및 저장
-        Order order = Order.createOrder(user, orderItemList);
+        Order order = Order.createOrder(member, orderItemList);
         orderRepository.save(order);
         return order.getId();
     }

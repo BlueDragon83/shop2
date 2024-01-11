@@ -1,5 +1,7 @@
 package com.shop.dto;
 
+import com.shop.domain.entity.member.Member;
+import com.shop.domain.enums.Role;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
@@ -8,7 +10,7 @@ import javax.validation.constraints.NotBlank;
 
 
 @Getter @Setter
-public class UserDto {
+public class MemberDto {
 
      @NotBlank(message = "이름은 필수 입력 값입니다.")
      private String name;
@@ -25,5 +27,22 @@ public class UserDto {
      private String address;
 
      private String phone;
+     private String role;
+
+     /* 암호화된 password */
+     public void encryptPassword(String BCryptpassword) {
+          this.password = BCryptpassword;
+     }
+
+     public Member toEntity() {
+          return Member.builder()
+                  .email(email)
+                  .password(password)
+                  .name(name)
+                  .address(address)
+                  .phone(phone)
+                  .role(Role.USER)
+                  .build();
+     }
 
 }

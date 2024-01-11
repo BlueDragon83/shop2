@@ -1,6 +1,7 @@
-package com.shop.domain.entity.item;
+package com.shop.domain.entity.order;
 
 import com.shop.domain.BaseEntity;
+import com.shop.domain.entity.item.Item;
 import lombok.Getter;
 import lombok.Setter;
 import javax.persistence.*;
@@ -45,4 +46,3 @@ public class OrderItem extends BaseEntity {
         this.getItem().addStock(count);
     }
 }
-

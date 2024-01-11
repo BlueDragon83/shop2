@@ -1,23 +1,24 @@
 package com.shop.service;
 
-import com.shop.domain.entity.user.User;
+import com.shop.domain.entity.item.Cart;
+import com.shop.domain.entity.item.CartItem;
+import com.shop.domain.entity.item.Item;
+import com.shop.domain.entity.member.Member;
 import com.shop.dto.CartItemDto;
 import com.shop.dto.CartListDto;
 import com.shop.dto.CartOrderDto;
 import com.shop.dto.OrderDto;
-import com.shop.domain.entity.item.Cart;
-import com.shop.domain.entity.item.CartItem;
-import com.shop.domain.entity.item.Item;
 import com.shop.repository.CartItemRepository;
 import com.shop.repository.CartRepository;
 import com.shop.repository.ItemRepository;
-import com.shop.repository.UserRepository;
+import com.shop.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.thymeleaf.util.StringUtils;
 
 import javax.persistence.EntityNotFoundException;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class CartService {
 
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
-    private final UserRepository userRepository;
+    private final MemberRepository memberRepository;
     private final ItemRepository itemRepository;
     private final OrderService orderService;
 
@@ -36,12 +37,12 @@ public class CartService {
     // 장바구니 담기
     public Long addCart(CartItemDto cartItemDto, String email) {
 
-        User user = userRepository.findByEmail(email);
-        Cart cart = cartRepository.findByUserId(user.getId());
+        Member member = memberRepository.findByEmail(email);
+        Cart cart = cartRepository.findByMemberId(member.getId());
 
         // 장바구니가 존재하지 않는다면 생성
         if (cart == null) {
-            cart = Cart.createCart(user);
+            cart = Cart.createCart(member);
             cartRepository.save(cart);
         }
 
@@ -53,7 +54,7 @@ public class CartService {
             cartItem = CartItem.createCartItem(cart, item, cartItemDto.getCount());
             cartItemRepository.save(cartItem);
 
-        // 해당 상품이 장바구니에 이미 존재한다면 수량을 증가
+            // 해당 상품이 장바구니에 이미 존재한다면 수량을 증가
         } else {
             cartItem.addCount(cartItemDto.getCount());
         }
@@ -67,8 +68,8 @@ public class CartService {
 
         List<CartListDto> cartListDtos = new ArrayList<>();
 
-        User user = userRepository.findByEmail(email);
-        Cart cart = cartRepository.findByUserId(user.getId());
+        Member member = memberRepository.findByEmail(email);
+        Cart cart = cartRepository.findByMemberId(member.getId());
 
         if (cart == null) {
             return cartListDtos;
@@ -83,12 +84,12 @@ public class CartService {
     public boolean validateCartItem(Long cartItemId, String email) {
 
         // 현재 로그인된 사용자
-        User currentUser = userRepository.findByEmail(email);
+        Member curmember = memberRepository.findByEmail(email);
 
         CartItem cartItem = cartItemRepository.findById(cartItemId).orElseThrow(EntityNotFoundException::new);
-        User savedUser = cartItem.getCart().getUser();
+        Member savedmember = cartItem.getCart().getMember();
 
-        if (StringUtils.equals(currentUser.getEmail(), savedUser.getEmail())) {
+        if (StringUtils.equals(curmember.getEmail(), savedmember.getEmail())) {
             return true;
         }
         return false;
@@ -129,3 +130,4 @@ public class CartService {
         return orderId;
     }
 }
+

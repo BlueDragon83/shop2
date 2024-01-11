@@ -1,6 +1,6 @@
 package com.shop.dto;
 
-import com.shop.domain.entity.item.OrderItem;
+import com.shop.domain.entity.order.OrderItem;
 import lombok.Getter;
 import lombok.Setter;
 
